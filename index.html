@@ -53,6 +53,13 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: msgIn 0.3s ease forwards;
+}
+
+@keyframes msgIn {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .message-row.self {
@@ -115,21 +122,141 @@ body {
   border-left-color: #95ec69;
   border-right: 0;
 }
+
+.typing-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: msgIn 0.3s ease forwards;
+}
+
+.typing-bubble {
+  background: #fff;
+  padding: 12px 14px;
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  height: 38px;
+}
+
+.typing-bubble::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 12px;
+  border: 6px solid transparent;
+  border-right-color: #fff;
+  border-left: 0;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #999;
+  animation: typingBounce 1.2s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
 </style>
 </head>
 <body>
 <div class="phone">
   <div class="title-bar">码道小助手</div>
-  <div class="chat-area">
-    <div class="message-row">
-      <div class="avatar other"></div>
-      <div class="bubble other">在吗？</div>
-    </div>
-    <div class="message-row self">
-      <div class="avatar self"></div>
-      <div class="bubble self">在的，怎么啦？</div>
-    </div>
-  </div>
+  <div class="chat-area" id="chatArea"></div>
 </div>
+<script>
+const chatArea = document.getElementById('chatArea');
+
+const script = [
+  { side: 'other', text: '在吗？' },
+  { side: 'self', text: '在的，怎么啦？' },
+  { side: 'other', text: '我想用 AI 做一个无限动画，听说可以用 git 边做边回退？' },
+  { side: 'self', text: '对，思路很简单' },
+  { side: 'other', text: '满意就 commit，不满意就 checkout / reset 回退再改' },
+  { side: 'self', text: '懂了，那我先去试试' },
+  { side: 'other', text: '👍 有不懂的随时问' }
+];
+
+const TYPE_DELAY = 1500;
+const MSG_DELAY = 600;
+const RESTART_DELAY = 3000;
+
+function scrollBottom() {
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function createMessageRow(side, text) {
+  const row = document.createElement('div');
+  row.className = 'message-row' + (side === 'self' ? ' self' : '');
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar ' + side;
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble ' + side;
+  bubble.textContent = text;
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  return row;
+}
+
+function createTypingRow() {
+  const row = document.createElement('div');
+  row.className = 'typing-row';
+  row.id = 'typingRow';
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar other';
+  const bubble = document.createElement('div');
+  bubble.className = 'typing-bubble';
+  for (let i = 0; i < 3; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'typing-dot';
+    bubble.appendChild(dot);
+  }
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  return row;
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function playScript() {
+  chatArea.innerHTML = '';
+  scrollBottom();
+
+  for (let i = 0; i < script.length; i++) {
+    const msg = script[i];
+
+    if (msg.side === 'other') {
+      const typing = createTypingRow();
+      chatArea.appendChild(typing);
+      scrollBottom();
+      await sleep(TYPE_DELAY);
+      typing.remove();
+    }
+
+    const row = createMessageRow(msg.side, msg.text);
+    chatArea.appendChild(row);
+    scrollBottom();
+    await sleep(MSG_DELAY);
+  }
+
+  await sleep(RESTART_DELAY);
+  playScript();
+}
+
+playScript();
+</script>
 </body>
 </html>
