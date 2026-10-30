@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微信聊天</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f0f0f0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.phone {
+  width: 375px;
+  height: 720px;
+  background: #ededed;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.title-bar {
+  height: 44px;
+  background: #ededed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  border-bottom: 0.5px solid #d9d9d9;
+  flex-shrink: 0;
+}
+
+.chat-area {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.message-row.self {
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.avatar.other {
+  background: #c8c8c8 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="%23c8c8c8"/><text x="18" y="24" text-anchor="middle" font-size="14" fill="white">友</text></svg>') no-repeat;
+}
+
+.avatar.self {
+  background: #95ec69 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="%2395ec69"/><text x="18" y="24" text-anchor="middle" font-size="14" fill="white">我</text></svg>') no-repeat;
+}
+
+.bubble {
+  max-width: 260px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  position: relative;
+}
+
+.bubble.other {
+  background: #fff;
+  color: #000;
+}
+
+.bubble.other::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 12px;
+  border: 6px solid transparent;
+  border-right-color: #fff;
+  border-left: 0;
+}
+
+.bubble.self {
+  background: #95ec69;
+  color: #000;
+}
+
+.bubble.self::before {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 12px;
+  border: 6px solid transparent;
+  border-left-color: #95ec69;
+  border-right: 0;
+}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="title-bar">码道小助手</div>
+  <div class="chat-area">
+    <div class="message-row">
+      <div class="avatar other"></div>
+      <div class="bubble other">在吗？</div>
+    </div>
+    <div class="message-row self">
+      <div class="avatar self"></div>
+      <div class="bubble self">在的，怎么啦？</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
