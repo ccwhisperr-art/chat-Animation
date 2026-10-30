@@ -49,6 +49,22 @@ body {
   overflow-y: auto;
 }
 
+.time-divider {
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  animation: msgIn 0.3s ease forwards;
+}
+
+.time-pill {
+  background: #cecece;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  line-height: 1.6;
+}
+
 .message-row {
   display: flex;
   align-items: flex-start;
@@ -91,6 +107,7 @@ body {
   line-height: 1.4;
   word-wrap: break-word;
   position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .bubble.other {
@@ -101,26 +118,30 @@ body {
 .bubble.other::before {
   content: '';
   position: absolute;
-  left: -6px;
-  top: 12px;
-  border: 6px solid transparent;
-  border-right-color: #fff;
-  border-left: 0;
+  left: -5px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 6px 5px 0;
+  border-color: transparent #fff transparent transparent;
 }
 
 .bubble.self {
-  background: #95ec69;
+  background: #9ed96e;
   color: #000;
 }
 
 .bubble.self::before {
   content: '';
   position: absolute;
-  right: -6px;
-  top: 12px;
-  border: 6px solid transparent;
-  border-left-color: #95ec69;
-  border-right: 0;
+  right: -5px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 0 5px 6px;
+  border-color: transparent transparent transparent #9ed96e;
 }
 
 .typing-row {
@@ -134,39 +155,52 @@ body {
 
 .typing-bubble {
   background: #fff;
-  padding: 12px 14px;
+  padding: 10px 14px;
   border-radius: 8px;
   position: relative;
   display: flex;
-  gap: 4px;
+  gap: 3px;
   align-items: center;
-  height: 38px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .typing-bubble::before {
   content: '';
   position: absolute;
-  left: -6px;
-  top: 12px;
-  border: 6px solid transparent;
-  border-right-color: #fff;
-  border-left: 0;
+  left: -5px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 6px 5px 0;
+  border-color: transparent #fff transparent transparent;
+}
+
+.typing-text {
+  font-size: 13px;
+  color: #9ed96e;
+  margin-right: 2px;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 2px;
 }
 
 .typing-dot {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: #999;
-  animation: typingBounce 1.2s infinite ease-in-out;
+  background: #9ed96e;
+  animation: dotFade 1.2s infinite ease-in-out;
 }
 
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
-@keyframes typingBounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-6px); opacity: 1; }
+@keyframes dotFade {
+  0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1.1); }
 }
 </style>
 </head>
@@ -179,13 +213,13 @@ body {
 const chatArea = document.getElementById('chatArea');
 
 const script = [
-  { side: 'other', text: '在吗？' },
+  { side: 'other', text: '在吗？', time: '10:30' },
   { side: 'self', text: '在的，怎么啦？' },
-  { side: 'other', text: '我想用 AI 做一个无限动画，听说可以用 git 边做边回退？' },
+  { side: 'other', text: '我想用 AI 做一个无限动画，听说可以用 git 边做边回退？', time: '10:31' },
   { side: 'self', text: '对，思路很简单' },
   { side: 'other', text: '满意就 commit，不满意就 checkout / reset 回退再改' },
   { side: 'self', text: '懂了，那我先去试试' },
-  { side: 'other', text: '👍 有不懂的随时问' }
+  { side: 'other', text: '👍 有不懂的随时问', time: '10:32' }
 ];
 
 const TYPE_DELAY = 1500;
@@ -194,6 +228,16 @@ const RESTART_DELAY = 3000;
 
 function scrollBottom() {
   chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function createTimeDivider(time) {
+  const div = document.createElement('div');
+  div.className = 'time-divider';
+  const pill = document.createElement('div');
+  pill.className = 'time-pill';
+  pill.textContent = time;
+  div.appendChild(pill);
+  return div;
 }
 
 function createMessageRow(side, text) {
@@ -217,11 +261,18 @@ function createTypingRow() {
   avatar.className = 'avatar other';
   const bubble = document.createElement('div');
   bubble.className = 'typing-bubble';
+  const text = document.createElement('span');
+  text.className = 'typing-text';
+  text.textContent = '正在输入';
+  const dots = document.createElement('span');
+  dots.className = 'typing-dots';
   for (let i = 0; i < 3; i++) {
-    const dot = document.createElement('div');
+    const dot = document.createElement('span');
     dot.className = 'typing-dot';
-    bubble.appendChild(dot);
+    dots.appendChild(dot);
   }
+  bubble.appendChild(text);
+  bubble.appendChild(dots);
   row.appendChild(avatar);
   row.appendChild(bubble);
   return row;
@@ -237,6 +288,13 @@ async function playScript() {
 
   for (let i = 0; i < script.length; i++) {
     const msg = script[i];
+
+    if (msg.time) {
+      const divider = createTimeDivider(msg.time);
+      chatArea.appendChild(divider);
+      scrollBottom();
+      await sleep(400);
+    }
 
     if (msg.side === 'other') {
       const typing = createTypingRow();
