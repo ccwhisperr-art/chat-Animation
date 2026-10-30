@@ -29,15 +29,19 @@ body {
 
 .title-bar {
   height: 44px;
-  background: #ededed;
+  background: #1a1a2e;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
   font-weight: 500;
-  color: #000;
-  border-bottom: 0.5px solid #d9d9d9;
+  color: #e0e0e0;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff) 1;
+  border-radius: 0 0 12px 12px;
   flex-shrink: 0;
+  text-shadow: 0 0 8px rgba(0,255,255,0.6), 0 0 4px rgba(255,0,255,0.4);
+  box-shadow: 0 2px 12px rgba(255,0,255,0.3), 0 2px 12px rgba(0,255,255,0.2);
 }
 
 .chat-area {
@@ -96,7 +100,7 @@ body {
 }
 
 .avatar.self {
-  background: #95ec69 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="%2395ec69"/><text x="18" y="24" text-anchor="middle" font-size="14" fill="white">我</text></svg>') no-repeat;
+  background: linear-gradient(135deg, #ff00ff, #00ffff) url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="url(%23grad)"/><defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%23ff00ff"/><stop offset="1" stop-color="%2300ffff"/></linearGradient></defs><text x="18" y="24" text-anchor="middle" font-size="14" fill="white">我</text></svg>') no-repeat;
 }
 
 .bubble {
@@ -128,8 +132,10 @@ body {
 }
 
 .bubble.self {
-  background: #9ed96e;
-  color: #000;
+  background: linear-gradient(135deg, #ff00ff, #8a2be2, #00ffff);
+  color: #fff;
+  text-shadow: 0 0 4px rgba(255,255,255,0.5);
+  box-shadow: 0 0 12px rgba(255,0,255,0.4), 0 0 8px rgba(0,255,255,0.3), 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .bubble.self::before {
@@ -141,7 +147,7 @@ body {
   height: 0;
   border-style: solid;
   border-width: 5px 0 5px 6px;
-  border-color: transparent transparent transparent #9ed96e;
+  border-color: transparent transparent transparent #8a2be2;
 }
 
 .typing-row {
@@ -178,8 +184,9 @@ body {
 
 .typing-text {
   font-size: 13px;
-  color: #9ed96e;
+  color: #ff00ff;
   margin-right: 2px;
+  text-shadow: 0 0 4px rgba(255,0,255,0.5);
 }
 
 .typing-dots {
@@ -191,8 +198,9 @@ body {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #9ed96e;
+  background: #00ffff;
   animation: dotFade 1.2s infinite ease-in-out;
+  box-shadow: 0 0 4px rgba(0,255,255,0.6);
 }
 
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
