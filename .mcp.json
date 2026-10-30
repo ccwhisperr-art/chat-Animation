@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "gitcode": {
+      "type": "stdio",
+      "command": "C:\\Users\\DELL\\gitcode-mcp-temp\\.venv\\Scripts\\python.exe",
+      "args": ["C:\\Users\\DELL\\gitcode-mcp-temp\\server.py"],
+      "env": {
+        "GITCODE_TOKEN": "AYNAoY7-YDYuojrLs3yAXV4A",
+        "GITCODE_TOOLSETS": "all"
+      }
+    }
+  }
+}
